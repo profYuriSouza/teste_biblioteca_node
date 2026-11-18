@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Biblioteca | Projeto didático</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <!-- O Express entrega este HTML pronto. Ele não é processado por um template. -->
+    <header class="cabecalho">
+        <div class="barra container">
+            <a class="marca" href="#catalogo" data-pagina="catalogo" aria-label="Ir para o catálogo">
+                <span class="marca-icone" aria-hidden="true">B.</span>
+                <span>Biblioteca<span class="marca-ponto">.</span><small>PROJETO DIDÁTICO</small></span>
+            </a>
+            <nav class="navegacao" aria-label="Navegação principal">
+                <button class="nav-link ativo" data-pagina="catalogo">Catálogo</button>
+                <button class="nav-link" data-pagina="autores">Autores</button>
+                <button class="nav-link somente-logado" data-pagina="emprestimos" hidden>Meus empréstimos</button>
+                <button class="nav-link somente-logado" data-pagina="conta" hidden>Minha conta</button>
+            </nav>
+            <div class="acoes-conta">
+                <span id="nome-usuario" class="nome-usuario somente-logado" hidden></span>
+                <button class="botao botao-escuro somente-deslogado" data-pagina="login">Entrar <span aria-hidden="true">↗</span></button>
+                <button id="sair" class="botao botao-contorno somente-logado" hidden>Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container principal">
+        <div id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></div>
+
+        <section id="pagina-catalogo" class="pagina">
+            <div class="intro">
+                <div><p class="etiqueta"><span></span> NOSSO ACERVO</p>
+                    <h1>Boas histórias<br><em>começam aqui.</em></h1>
+                    <p class="texto-intro">Explore o catálogo, conheça os autores e encontre sua próxima leitura.</p>
+                </div>
+                <div class="intro-nota"><span class="nota-icone" aria-hidden="true">✳</span><p>Uma pequena biblioteca.<br><strong>Grandes ideias.</strong></p></div>
+            </div>
+            <div class="secao-cabecalho">
+                <div><p class="sobretitulo">EXPLORAR</p><h2>Livros do acervo</h2><p class="apoio">Consulte a disponibilidade de cada exemplar.</p></div>
+                <button id="abrir-form-livro" class="botao botao-principal somente-logado" hidden>+ Cadastrar livro</button>
+            </div>
+            <form id="form-livro" class="painel formulario" hidden>
+                <div class="painel-topo"><div><p class="sobretitulo">CADASTRO</p><h3 id="titulo-form-livro">Novo livro</h3></div><button type="button" id="cancelar-livro" class="fechar" aria-label="Fechar formulário">×</button></div>
+                <input type="hidden" id="livro-id">
+                <div class="campos campos-livro">
+                    <label>Título<input id="livro-titulo" required maxlength="200" placeholder="Título do livro"></label>
+                    <label>Ano<input id="livro-ano" type="number" min="1000" max="9999" required placeholder="2026"></label>
+                    <label>ISBN<input id="livro-isbn" inputmode="numeric" pattern="[0-9]{10}([0-9]{3})?" required placeholder="10 ou 13 dígitos"></label>
+                </div>
+                <fieldset><legend>Autores <span>(escolha um ou mais)</span></legend><div id="livro-autores" class="lista-opcoes"></div></fieldset>
+                <p class="dica">O autor precisa estar cadastrado antes de ser associado ao livro.</p>
+                <button class="botao botao-principal" type="submit">Salvar livro</button>
+            </form>
+            <div class="busca"><label for="busca-livro" class="visualmente-oculto">Buscar livro ou autor</label><span aria-hidden="true">⌕</span><input id="busca-livro" type="search" placeholder="Buscar por título ou autor..."><span id="contagem-livros" class="contagem"></span></div>
+            <div id="lista-livros" class="grade-livros"></div>
+        </section>
+
+        <section id="pagina-autores" class="pagina" hidden>
+            <div class="pagina-titulo"><p class="sobretitulo">QUEM ESCREVE</p><h1>Autores<span class="cor-verde">.</span></h1><p>As pessoas por trás dos livros do acervo.</p></div>
+            <div class="secao-cabecalho"><div><h2>Autores cadastrados</h2><p class="apoio">Um autor pode participar de vários livros.</p></div><button id="abrir-form-autor" class="botao botao-principal somente-logado" hidden>+ Cadastrar autor</button></div>
+            <form id="form-autor" class="painel formulario" hidden>
+                <div class="painel-topo"><div><p class="sobretitulo">CADASTRO</p><h3 id="titulo-form-autor">Novo autor</h3></div><button type="button" id="cancelar-autor" class="fechar" aria-label="Fechar formulário">×</button></div>
+                <input type="hidden" id="autor-id"><div class="campos"><label>Nome<input id="autor-nome" required minlength="3" placeholder="Nome do autor"></label><label>E-mail<input id="autor-email" type="email" required placeholder="autor@exemplo.com"></label></div>
+                <button class="botao botao-principal" type="submit">Salvar autor</button>
+            </form>
+            <div id="lista-autores" class="lista-autores"></div>
+        </section>
+
+        <section id="pagina-emprestimos" class="pagina" hidden>
+            <div class="pagina-titulo"><p class="sobretitulo">SUA BIBLIOTECA</p><h1>Meus empréstimos<span class="cor-verde">.</span></h1><p>Acompanhe suas leituras e registre devoluções.</p></div>
+            <div class="secao-cabecalho"><div><h2>Seu histórico</h2><p class="apoio">Empréstimos ativos e devolvidos aparecem aqui.</p></div><button class="botao botao-contorno" data-pagina="catalogo">Explorar catálogo →</button></div>
+            <div id="lista-emprestimos" class="lista-autores"></div>
+        </section>
+
+        <section id="pagina-login" class="pagina pagina-estreita" hidden>
+            <div class="pagina-titulo"><p class="sobretitulo">BEM-VINDO DE VOLTA</p><h1>Entre na sua conta<span class="cor-verde">.</span></h1><p>Acesse seus empréstimos e gerencie o acervo.</p></div>
+            <form id="form-login" class="painel formulario">
+                <label>E-mail<input id="login-email" type="email" required autocomplete="email" placeholder="voce@exemplo.com"></label>
+                <label>Senha<input id="login-senha" type="password" required autocomplete="current-password" placeholder="Sua senha"></label>
+                <button class="botao botao-principal botao-largo" type="submit">Entrar na biblioteca →</button>
+                <p class="form-rodape">Ainda não tem conta? <button type="button" class="link" data-pagina="cadastro">Cadastre-se</button></p>
+            </form>
+        </section>
+
+        <section id="pagina-cadastro" class="pagina pagina-estreita" hidden>
+            <div class="pagina-titulo"><p class="sobretitulo">COMECE POR AQUI</p><h1>Crie sua conta<span class="cor-verde">.</span></h1><p>Cadastre-se para emprestar livros.</p></div>
+            <form id="form-cadastro" class="painel formulario">
+                <label>Nome<input id="cadastro-nome" required minlength="3" autocomplete="name" placeholder="Seu nome"></label>
+                <label>E-mail<input id="cadastro-email" type="email" required autocomplete="email" placeholder="voce@exemplo.com"></label>
+                <label>Senha<input id="cadastro-senha" type="password" required minlength="8" autocomplete="new-password" placeholder="Mínimo de 8 caracteres"></label>
+                <button class="botao botao-principal botao-largo" type="submit">Criar minha conta →</button>
+                <p class="form-rodape">Já tem conta? <button type="button" class="link" data-pagina="login">Entrar</button></p>
+            </form>
+        </section>
+
+        <section id="pagina-conta" class="pagina pagina-estreita" hidden>
+            <div class="pagina-titulo"><p class="sobretitulo">SEUS DADOS</p><h1>Minha conta<span class="cor-verde">.</span></h1><p>Atualize seu nome, e-mail ou senha.</p></div>
+            <form id="form-conta" class="painel formulario">
+                <label>Nome<input id="conta-nome" required minlength="3" autocomplete="name"></label>
+                <label>E-mail<input id="conta-email" type="email" required autocomplete="email"></label>
+                <label>Nova senha <span class="opcional">(opcional)</span><input id="conta-senha" type="password" minlength="8" autocomplete="new-password" placeholder="Deixe em branco para manter"></label>
+                <button class="botao botao-principal botao-largo" type="submit">Salvar alterações</button>
+                <button id="excluir-conta" class="link link-perigo" type="button">Excluir minha conta</button>
+            </form>
+        </section>
+    </main>
+    <footer class="rodape container"><span>Biblioteca<span class="cor-verde">.</span></span><span>Um projeto de estudos em desenvolvimento web.</span></footer>
+    <!-- Primeiro a comunicação com a API; depois as ações da interface. -->
+    <script src="/js/api.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

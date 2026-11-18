@@ -1,0 +1,73 @@
+# Exemplos opcionais com a extensão REST Client do VS Code.
+# Inicie o servidor com npm start. Execute cada bloco separadamente.
+@base = http://localhost:5000/api
+# Faça login no bloco abaixo e cole o token recebido aqui:
+@token = COLE_O_TOKEN_AQUI
+
+### Consulta pública de livros
+GET {{base}}/livros
+
+### Consulta pública de autores
+GET {{base}}/autores
+
+### Cadastro de usuário
+POST {{base}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Estudante Exemplo",
+  "email": "estudante@exemplo.com",
+  "senha": "senha1234"
+}
+
+### Login com a conta criada pelo seed
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "leitor@biblioteca.com",
+  "senha": "12345678"
+}
+
+### Consultar a própria conta: use o token retornado no login
+GET {{base}}/usuarios/eu
+Authorization: Bearer {{token}}
+
+### Cadastrar um autor
+POST {{base}}/autores
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Joana Silva",
+  "email": "joana@exemplo.com"
+}
+
+### Cadastrar livro: confira antes se os IDs 1 e 2 existem
+POST {{base}}/livros
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Aprendendo Node.js",
+  "ano": 2026,
+  "isbn": "0123456789",
+  "autores_ids": [1, 2]
+}
+
+### Emprestar o livro 1 para a pessoa autenticada
+POST {{base}}/emprestimos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "livro_id": 1
+}
+
+### Consultar os próprios empréstimos
+GET {{base}}/emprestimos
+Authorization: Bearer {{token}}
+
+### Devolver: substitua 1 pelo ID do empréstimo criado
+PATCH {{base}}/emprestimos/1/devolucao
+Authorization: Bearer {{token}}
